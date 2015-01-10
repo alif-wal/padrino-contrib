@@ -34,8 +34,11 @@ module Padrino
           body += "\n\n---Params:\n"
           params.each { |k,v| body += "\n#{k.inspect} => #{v.inspect}" }
           
-          if body.present? # temp hack for conversion error
+          begin
             logger.error body
+          rescue Exception => e
+            logger.close
+            logger.error "Whoa, weird exception in padrino-contrib: #{e.class} #{e.message} #{e.backtrace.take(10).join("\n")}"
           end
           
           settings.redmine.each { |k,v| body += "\n#{k.to_s.capitalize}: #{v}" }
