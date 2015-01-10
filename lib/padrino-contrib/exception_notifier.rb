@@ -33,11 +33,11 @@ module Padrino
           env.each { |k,v| body += "\n#{k}: #{v}" }
           body += "\n\n---Params:\n"
           params.each { |k,v| body += "\n#{k.inspect} => #{v.inspect}" }
-          begin
+          
+          if body.present? # temp hack for conversion error
             logger.error body
-          rescue Encoding::UndefinedConversionError => e
-            logger.error "Encoding::UndefinedConversionError occurred at #{e.backtrace.take(20).join("\n")}"
           end
+          
           settings.redmine.each { |k,v| body += "\n#{k.to_s.capitalize}: #{v}" }
           app.email do
             subject "[#{app.exceptions_subject}] #{boom.class} - #{boom.message}"
